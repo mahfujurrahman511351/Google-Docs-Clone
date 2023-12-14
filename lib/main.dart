@@ -1,10 +1,11 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:docs_clone/models/error_model.dart';
 import 'package:docs_clone/repository/auth_repository.dart';
-import 'package:docs_clone/screen/home_view.dart';
+import 'package:docs_clone/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'screen/log_in_view.dart';
+import 'package:routemaster/routemaster.dart';
 
 void main() {
   runApp(
@@ -27,8 +28,8 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   void initState() {
-    getUserData();
     super.initState();
+    getUserData();
   }
 
   void getUserData() async {
@@ -41,14 +42,22 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider);
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: user == null ? const LoginView() : const HomeView(),
+      routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
+        final user = ref.watch(userProvider);
+
+        if (user != null && user.token.isNotEmpty) {
+          return loggedInRoute;
+        } else {
+          return loggedOutRoute;
+        }
+      }),
+      routeInformationParser: const RoutemasterParser(),
     );
   }
 }

@@ -71,7 +71,7 @@ class AuthRepository {
   }
 
   Future<ErrorModel> getUserData() async {
-    ErrorModel error = ErrorModel(error: "Something wrong", data: null);
+    ErrorModel error = ErrorModel(error: "Something Wrong", data: null);
 
     try {
       String? token = await _localStorageRepository.getToken();
@@ -94,7 +94,7 @@ class AuthRepository {
               ),
             ).copyWith(token: token);
             error = ErrorModel(error: null, data: newUser);
-            _localStorageRepository.setToken(token);
+            _localStorageRepository.setToken(newUser.token);
             break;
         }
       }
@@ -105,5 +105,10 @@ class AuthRepository {
       );
     }
     return error;
+  }
+
+  void signOut() async {
+    await _googleSignIn.signOut();
+    _localStorageRepository.setToken('');
   }
 }

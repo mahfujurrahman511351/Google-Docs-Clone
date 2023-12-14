@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:docs_clone/repository/auth_repository.dart';
-import 'package:docs_clone/screen/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:routemaster/routemaster.dart';
 
 import '../colors/colors.dart';
 
@@ -12,16 +12,12 @@ class LoginView extends ConsumerWidget {
 
   void signInWithGoogle(WidgetRef ref, BuildContext context) async {
     final sMessenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
+    final navigator = Routemaster.of(context);
     final errorModel = await ref.read(authRepositoryProvider).signInWithGoogle();
 
     if (errorModel.error == null) {
       ref.read(userProvider.notifier).update((state) => errorModel.data);
-      navigator.push(
-        MaterialPageRoute(
-          builder: (context) => HomeView(),
-        ),
-      );
+      navigator.replace('/');
     } else {
       sMessenger.showSnackBar(
         SnackBar(
