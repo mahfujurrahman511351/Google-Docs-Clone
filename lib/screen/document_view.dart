@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../colors/colors.dart';
 import '../repository/document_repository.dart';
+import '../repository/socket_repository.dart';
 
 class DocumentView extends ConsumerStatefulWidget {
   final String id;
@@ -25,9 +26,11 @@ class _DocumentViewState extends ConsumerState<DocumentView> {
   );
   final quill.QuillController _controller = quill.QuillController.basic();
   ErrorModel? errorModel;
+  SocketRepository socketRepository = SocketRepository();
 
   @override
   void initState() {
+    socketRepository.joinRoom(widget.id);
     fetchDocumentData();
     super.initState();
   }
